@@ -27,16 +27,12 @@
 
 @interface RadioButton : UIButton
 
-// Outlet collection of bidirectional links to other buttons in the group.
-@property (nonatomic, strong) IBOutletCollection(RadioButton) NSArray* otherButtons;
+// Outlet collection of links to other buttons in the group.
+@property (nonatomic, strong) IBOutletCollection(RadioButton) NSArray* groupButtons;
 
 // Currently selected radio button in the group.
 // If there are multiple buttons selected then it returns the first one.
 @property (nonatomic, readonly) RadioButton* selectedRadioButton;
-
-// If selected==YES it selects the current button and deselects other buttons.
-// If selected==NO it deselects the current button and selects random another one.
--(void) setRadioSelected:(BOOL)selected;
 
 // Find first radio with given tag and makes it selected.
 // All of other buttons in the group become deselected.

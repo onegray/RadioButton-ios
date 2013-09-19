@@ -27,7 +27,7 @@
 
 @interface RadioButton()
 {
-	NSMutableArray* _otherButtons;
+	NSMutableArray* _sharedLinks;
 }
 @end
 
@@ -49,25 +49,61 @@
 
 -(void) onTouchUpInside
 {
-	[self setRadioSelected:YES];
+	[self setSelected:YES];
 }
 
--(void) setOtherButtons:(NSArray *)buttons
+-(void) setGroupButtons:(NSArray *)buttons
 {
-	[_otherButtons removeAllObjects];
-	if(!_otherButtons) {
-		_otherButtons = [[NSMutableArray alloc] initWithCapacity:[buttons count]];
+	if(!_sharedLinks) {
+		for(RadioButton* rb in buttons) {
+			if(rb->_sharedLinks) {
+				_sharedLinks = rb->_sharedLinks;
+				break;
+			}
+		}
+		if(!_sharedLinks) {
+			_sharedLinks = [[NSMutableArray alloc] initWithCapacity:[buttons count]+1];
+		}
 	}
-	for(id obj in buttons) {
-		[_otherButtons addObject:[NSValue valueWithNonretainedObject:obj]];
+
+	BOOL (^btnExistsInList)(NSArray*, RadioButton*) = ^(NSArray* list, RadioButton* rb){
+		for(NSValue* v in list) {
+			if([v nonretainedObjectValue]==rb) {
+				return YES;
+			}
+		}
+		return NO;
+	};
+
+	if(!btnExistsInList(_sharedLinks, self)) {
+		[_sharedLinks addObject:[NSValue valueWithNonretainedObject:self]];
+	}
+
+	for(RadioButton* rb in buttons) {
+		if(rb->_sharedLinks!=_sharedLinks) {
+			if(!rb->_sharedLinks) {
+				rb->_sharedLinks = _sharedLinks;
+			} else {
+				for(NSValue* v in rb->_sharedLinks) {
+					RadioButton* vrb = [v nonretainedObjectValue];
+					if(!btnExistsInList(_sharedLinks, vrb)) {
+						[_sharedLinks addObject:v];
+						vrb->_sharedLinks = _sharedLinks;
+					}
+				}
+			}
+		}
+		if(!btnExistsInList(_sharedLinks, rb)) {
+			[_sharedLinks addObject:[NSValue valueWithNonretainedObject:rb]];
+		}
 	}
 }
 
--(NSArray*) otherButtons
+-(NSArray*) groupButtons
 {
-	if(_otherButtons) {
-		NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:[_otherButtons count]];
-		for(NSValue* v in _otherButtons) {
+	if([_sharedLinks count]) {
+		NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:[_sharedLinks count]];
+		for(NSValue* v in _sharedLinks) {
 			[buttons addObject:[v nonretainedObjectValue]];
 		}
 		return buttons;
@@ -80,7 +116,7 @@
 	if([self isSelected]) {
 		return self;
 	} else {
-		for(NSValue* v in _otherButtons) {
+		for(NSValue* v in _sharedLinks) {
 			RadioButton* rb = [v nonretainedObjectValue];
 			if([rb isSelected]) {
 				return rb;
@@ -90,42 +126,47 @@
 	return nil;
 }
 
--(void) setRadioSelected:(BOOL)selected
+-(void) super_setSelected:(BOOL)selected
 {
-	self.selected = selected;
-	for(NSValue* v in _otherButtons) {
-		[[v nonretainedObjectValue] setSelected:!selected];
-		selected = YES;
+	[super setSelected:selected];
+}
+
+-(void) setSelected:(BOOL)selected
+{
+	[super setSelected:selected];
+	selected = !selected;
+	for(NSValue* v in _sharedLinks) {
+		RadioButton* rb = [v nonretainedObjectValue];
+		if(rb!=self) {
+			[rb super_setSelected:selected];
+			selected = NO;
+		}
 	}
 }
 
 -(void) selectRadioWithTag:(NSInteger)tag
 {
 	if(self.tag == tag) {
-		[self setRadioSelected:YES];
+		[self setSelected:YES];
 	} else {
-		for(NSValue* v in _otherButtons) {
+		for(NSValue* v in _sharedLinks) {
 			RadioButton* rb = [v nonretainedObjectValue];
 			if(rb.tag == tag) {
-				[rb setRadioSelected:YES];
+				[rb setSelected:YES];
 				break;
 			}
 		}
 	}
 }
 
--(void) unbindOutlets
-{
-	NSArray* buttons = _otherButtons;
-	_otherButtons = nil;
-	for(NSValue* v in buttons) {
-		[[v nonretainedObjectValue] unbindOutlets];
-	}
-}
-
 - (void)dealloc
 {
-	[self unbindOutlets];
+	for(NSValue* v in _sharedLinks) {
+		if([v nonretainedObjectValue]==self) {
+			[_sharedLinks removeObjectIdenticalTo:v];
+			break;
+		}
+	}
 }
 
 
