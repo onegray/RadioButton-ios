@@ -32,10 +32,10 @@
 
 // Currently selected radio button in the group.
 // If there are multiple buttons selected then it returns the first one.
-@property (nonatomic, readonly) RadioButton* selectedRadioButton;
+@property (nonatomic, readonly) RadioButton* selectedButton;
 
 // Find first radio with given tag and makes it selected.
 // All of other buttons in the group become deselected.
--(void) selectRadioWithTag:(NSInteger)tag;
+-(void) setSelectedWithTag:(NSInteger)tag;
 
 @end

@@ -111,7 +111,7 @@
 	return nil;
 }
 
--(RadioButton*) selectedRadioButton
+-(RadioButton*) selectedButton
 {
 	if([self isSelected]) {
 		return self;
@@ -144,7 +144,7 @@
 	}
 }
 
--(void) selectRadioWithTag:(NSInteger)tag
+-(void) setSelectedWithTag:(NSInteger)tag
 {
 	if(self.tag == tag) {
 		[self setSelected:YES];
