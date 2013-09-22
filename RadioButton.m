@@ -37,17 +37,30 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-		[self addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+		if(![[self allTargets] containsObject:self]) {
+			[super addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+		}
     }
     return self;
 }
 
 -(void) awakeFromNib
 {
-	[self addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+	if(![[self allTargets] containsObject:self]) {
+		[super addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+	}
 }
 
--(void) onTouchUpInside
+-(void) addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents
+{
+	// 'self' should be the first target
+	if(![[self allTargets] containsObject:self]) {
+		[super addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+	}
+	[super addTarget:target action:action forControlEvents:controlEvents];
+}
+
+-(void) onTouchDown
 {
 	[self setSelected:YES];
 }
