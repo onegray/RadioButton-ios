@@ -32,8 +32,9 @@ And a helpful method to select button by tag:
 	[radio1 setSelectedWithTag:kTagRadio3];
 
 
-#### Resource images used in sample above
-[radio-res-ios.zip](https://raw.github.com/onegray/RadioButton-ios/data/radio-res-ios.zip)
+#### Resources
+[sample.zip](https://github.com/onegray/RadioButton-ios/archive/sample.zip) - Sample app  
+[radio-res-ios.zip](https://raw.github.com/onegray/RadioButton-ios/data/radio-res-ios.zip) - Radio Button images used in the sample  
 
 #### License
 RadioButton is available under the MIT license - fork, modify and use however you want.
