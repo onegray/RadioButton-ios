@@ -5,7 +5,7 @@ Default and selected states can be configured for every button.
 ![Demo](https://raw.github.com/onegray/RadioButton-ios/data/demo.gif)
 
 #### Super easy to use
-It does not need any central manager. Just links buttons right in Interface Builder:
+It does not need any central manager. Just link the buttons right in Interface Builder:
 
 ![Demo](https://raw.github.com/onegray/RadioButton-ios/data/linking.gif)
 
