@@ -147,12 +147,14 @@
 -(void) setSelected:(BOOL)selected
 {
 	[super setSelected:selected];
-	selected = !selected;
-	for(NSValue* v in _sharedLinks) {
-		RadioButton* rb = [v nonretainedObjectValue];
-		if(rb!=self) {
-			[rb super_setSelected:selected];
-			selected = NO;
+	if(selected || [_sharedLinks count]==2)
+	{
+		selected = !selected;
+		for(NSValue* v in _sharedLinks) {
+			RadioButton* rb = [v nonretainedObjectValue];
+			if(rb!=self) {
+				[rb super_setSelected:selected];
+			}
 		}
 	}
 }
