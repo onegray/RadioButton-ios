@@ -38,4 +38,6 @@
 // All of other buttons in the group become deselected.
 -(void) setSelectedWithTag:(NSInteger)tag;
 
+-(void) deselectAllButtons;
+
 @end

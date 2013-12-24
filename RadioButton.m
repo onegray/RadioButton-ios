@@ -157,6 +157,14 @@
 	}
 }
 
+-(void) deselectAllButtons
+{
+	for(NSValue* v in _sharedLinks) {
+		RadioButton* rb = [v nonretainedObjectValue];
+		[rb super_setSelected:NO];
+	}
+}
+
 -(void) setSelectedWithTag:(NSInteger)tag
 {
 	if(self.tag == tag) {
