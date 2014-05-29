@@ -38,7 +38,7 @@
     self = [super initWithFrame:frame];
     if (self) {
 		if(![[self allTargets] containsObject:self]) {
-			[super addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+			[super addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
 		}
     }
     return self;
@@ -47,7 +47,7 @@
 -(void) awakeFromNib
 {
 	if(![[self allTargets] containsObject:self]) {
-		[super addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+		[super addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
 	}
 }
 
@@ -55,12 +55,12 @@
 {
 	// 'self' should be the first target
 	if(![[self allTargets] containsObject:self]) {
-		[super addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+		[super addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
 	}
 	[super addTarget:target action:action forControlEvents:controlEvents];
 }
 
--(void) onTouchDown
+-(void) onTouchUpInside
 {
 	[self setSelected:YES distinct:YES sendControlEvent:YES];
 }
