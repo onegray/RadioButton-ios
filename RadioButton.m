@@ -62,7 +62,7 @@
 
 -(void) onTouchDown
 {
-	[self setSelected:YES];
+	[self setSelected:YES distinct:YES sendControlEvent:YES];
 }
 
 -(void) setGroupButtons:(NSArray *)buttons
@@ -139,21 +139,31 @@
 	return nil;
 }
 
--(void) super_setSelected:(BOOL)selected
-{
-	[super setSelected:selected];
-}
-
 -(void) setSelected:(BOOL)selected
 {
+	[self setSelected:selected distinct:YES sendControlEvent:NO];
+}
+
+-(void) setButtonSelected:(BOOL)selected sendControlEvent:(BOOL)sendControlEvent
+{
+	BOOL valueChanged = (self.selected != selected);
 	[super setSelected:selected];
-	if(selected || [_sharedLinks count]==2)
+	if(valueChanged && sendControlEvent) {
+		[self sendActionsForControlEvents:UIControlEventValueChanged];
+	}
+}
+
+-(void) setSelected:(BOOL)selected distinct:(BOOL)distinct sendControlEvent:(BOOL)sendControlEvent
+{
+	[self setButtonSelected:selected sendControlEvent:sendControlEvent];
+
+	if( distinct && (selected || [_sharedLinks count]==2) )
 	{
 		selected = !selected;
 		for(NSValue* v in _sharedLinks) {
 			RadioButton* rb = [v nonretainedObjectValue];
 			if(rb!=self) {
-				[rb super_setSelected:selected];
+				[rb setButtonSelected:selected sendControlEvent:sendControlEvent];
 			}
 		}
 	}
@@ -163,19 +173,19 @@
 {
 	for(NSValue* v in _sharedLinks) {
 		RadioButton* rb = [v nonretainedObjectValue];
-		[rb super_setSelected:NO];
+		[rb setButtonSelected:NO sendControlEvent:NO];
 	}
 }
 
 -(void) setSelectedWithTag:(NSInteger)tag
 {
 	if(self.tag == tag) {
-		[self setSelected:YES];
+		[self setSelected:YES distinct:YES sendControlEvent:NO];
 	} else {
 		for(NSValue* v in _sharedLinks) {
 			RadioButton* rb = [v nonretainedObjectValue];
 			if(rb.tag == tag) {
-				[rb setSelected:YES];
+				[rb setSelected:YES distinct:YES sendControlEvent:NO];
 				break;
 			}
 		}
