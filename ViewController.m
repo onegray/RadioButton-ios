@@ -27,11 +27,12 @@
 -(IBAction)onCreateMoreButtons:(id)sender
 {
 	[sender setHidden:YES];
-
+	
 	NSMutableArray* buttons = [NSMutableArray arrayWithCapacity:3];
 	CGRect btnRect = CGRectMake(25, 320, 100, 30);
 	for (NSString* optionTitle in @[@"Red", @"Green", @"Blue"]) {
 		RadioButton* btn = [[RadioButton alloc] initWithFrame:btnRect];
+		[btn addTarget:self action:@selector(onRadioButtonValueChanged:) forControlEvents:UIControlEventValueChanged];
 		btnRect.origin.y += 40;
 		[btn setTitle:optionTitle forState:UIControlStateNormal];
 		[btn setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
@@ -43,10 +44,18 @@
 		[self.view addSubview:btn];
 		[buttons addObject:btn];
 	}
-
+	
 	[buttons[0] setGroupButtons:buttons]; // Setting buttons into the group
-
+	
 	[buttons[0] setSelected:YES]; // Making the first button initially selected
+}
+
+-(void) onRadioButtonValueChanged:(RadioButton*)sender
+{
+	// Lets handle ValueChanged event only for selected button, and ignore for deselected
+	if(sender.selected) {
+		NSLog(@"Selected color: %@", sender.titleLabel.text);
+	}
 }
 
 @end
