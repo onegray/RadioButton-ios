@@ -31,6 +31,9 @@ And a helpful method to select button by tag:
 
 	[radio1 setSelectedWithTag:kTagRadio3];
 
+#### CocoaPods
+
+	pod 'RadioButton'
 
 #### Resources
 [sample.zip](https://github.com/onegray/RadioButton-ios/archive/sample.zip) - Sample app  
